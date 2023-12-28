@@ -7,7 +7,6 @@ public class LC918 {
         for (int i = 0; i < nums.length; i++) {
             matrix[nums.length + i] = matrix[i] = nums[i];
         }
-        LinkedList<int[]> queue = new LinkedList<>();
         LinkedList<int[]> deque = new LinkedList<>();
         deque.offerLast(new int[]{0, nums[0]});
         int res = nums[0], preSum = nums[0];
