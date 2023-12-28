@@ -7,19 +7,45 @@ import java.util.List;
 public class LC2866 {
     //TODO 单调栈用法
     public long maximumSumOfHeights(List<Integer> maxHeights) {
-        long[] matrix1 = new long[maxHeights.size()];
-        long[] matrix2 = new long[maxHeights.size()];
-        LinkedList<Integer> stack1 = new LinkedList<>();
-        LinkedList<Integer> stack2 = new LinkedList<>();
-
-        for (int i = maxHeights.size() - 1; i >= 0; i--) {
-            while (!stack1.isEmpty() && maxHeights.get(stack1.peekFirst()) < maxHeights.get(i)) {
-
+        long[] res = new long[maxHeights.size()];
+        for (int i = 0; i < maxHeights.size(); i++) {
+            LinkedList<Integer> stack1 = new LinkedList<>();
+            LinkedList<Integer> stack2 = new LinkedList<>();
+            int lcurr = i;
+            long lsum = 0;
+            while (lcurr >= 0) {
+                if (stack1.isEmpty()) {
+                    lsum = lsum + maxHeights.get(lcurr);
+                    stack1.push(lcurr);
+                } else {
+                    if (maxHeights.get(stack1.peek()) <= maxHeights.get(lcurr)) {
+                        lsum = lsum + maxHeights.get(stack1.peek());
+                    } else {
+                        lsum = lsum + maxHeights.get(lcurr);
+                        stack1.push(lcurr);
+                    }
+                }
+                lcurr--;
             }
-            if (stack1.isEmpty()) {
-                stack1.push(i);
+            int rcurr = i;
+            long rsum = 0;
+            while (rcurr < maxHeights.size()) {
+                if (stack2.isEmpty()) {
+                    rsum = rsum + maxHeights.get(rcurr);
+                    stack2.push(rcurr);
+                } else {
+                    if (maxHeights.get(stack2.peek()) <= maxHeights.get(rcurr)) {
+                        rsum = rsum + maxHeights.get(stack2.peek());
+                    } else {
+                        rsum = rsum + maxHeights.get(rcurr);
+                        stack2.push(rcurr);
+                    }
+                }
+                rcurr++;
             }
+            res[i] = lsum + rsum - maxHeights.get(i);
         }
-        return 0;
+        Arrays.sort(res);
+        return res[res.length - 1];
     }
 }

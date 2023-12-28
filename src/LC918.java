@@ -1,18 +1,27 @@
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class LC918 {
     public int maxSubarraySumCircular(int[] nums) {
-        int[] matrix = new int[nums.length * 2 - 1];
-        matrix[0] = nums[0];
-        int[] newArr = new int[nums.length * 2 - 1];
-        System.arraycopy(nums, 0, newArr, 0, nums.length);
-        for (int i = nums.length; i < newArr.length; i++) {
-            newArr[i] = nums[i - nums.length];
+        int[] matrix = new int[nums.length * 2];
+        for (int i = 0; i < nums.length; i++) {
+            matrix[nums.length + i] = matrix[i] = nums[i];
         }
-        for (int i = 1; i < newArr.length; i++) {
-            matrix[i] = Math.max(matrix[i - 1] + newArr[i], newArr[i]);
+        LinkedList<int[]> queue = new LinkedList<>();
+        LinkedList<int[]> deque = new LinkedList<>();
+        deque.offerLast(new int[]{0, nums[0]});
+        int res = nums[0], preSum = nums[0];
+        for (int i = 1; i < matrix.length; ++i) {
+            while (!deque.isEmpty() && deque.peekFirst()[0] < i - nums.length) {
+                deque.pollFirst();
+            }
+            preSum += matrix[i];
+            res = Math.max(res, preSum - deque.peekFirst()[1]);
+            while (!deque.isEmpty() && deque.peekLast()[1] >= preSum) {
+                deque.pollLast();
+            }
+            deque.offerLast(new int[]{i, preSum});
         }
-        Arrays.sort(matrix);
-        return matrix[matrix.length - 1];
+        return res;
     }
 }
